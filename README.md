@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="/logo.png" alt="Cash Cam Pro Logo" width="200">
+  <img src="/logo.png" alt="Cash Cam Pro Logo" width="0">
 </div>
 
 # 💰 Cash Cam Pro v2.0
@@ -192,7 +192,6 @@ graph TB
 ### Data Flow
 
 ```mermaid
-graph TB
 sequenceDiagram
     actor Attacker
     actor Victim
