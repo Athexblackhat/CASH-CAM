@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="/logo.png" alt="Cash Cam Pro Logo" width="0">
+  <img src="/logo.png" alt="Cash Cam Pro Logo" width="100">
 </div>
 
 # 💰 Cash Cam Pro v2.0
